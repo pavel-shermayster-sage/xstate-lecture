@@ -1,34 +1,89 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useEffect, useState } from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isLoading, setIsLoading] = useState(true);
+  const [amount1, setAmount1] = useState(0);
+  const [amount2, setAmount2] = useState(0);
+  const [calculation, setCalculation] = useState(0);
+  const [isProcessing, setIsProcessing] = useState(false);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setAmount1(10);
+      setAmount2(20);
+      setCalculation(30);
+      setIsLoading(false);
+    }, 2000);
+  }, []);
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="flex justify-center align-middle">
+      <div className="bg-cyan-900 text-cyan-50 mt-64 w-1/3 shadow">
+        {isLoading && <div className="text-center p-10">Loading...</div>}
+        {!isLoading && (
+          <form
+            className="p-10"
+            onSubmit={(e) => {
+              e.preventDefault();
+              setIsProcessing(true);
+              setTimeout(() => {
+                setCalculation(amount1 + amount2);
+                setIsProcessing(false);
+              }, 2000);
+            }}
+          >
+            <div className="flex flex-col justify-center gap-1">
+              <label className="uppercase" htmlFor="amount1">
+                amount 1:
+              </label>
+              <input
+                className="p-2 text-cyan-900"
+                type="number"
+                name="amount1"
+                id="amount1"
+                value={amount1}
+                onChange={(e) => {
+                  setAmount1(Number(e.target.value));
+                }}
+              />
+            </div>
+            <div className="flex flex-col justify-center gap-1 mt-2">
+              <label className="uppercase" htmlFor="amount2">
+                amount 2:
+              </label>
+              <input
+                className="p-2 text-cyan-900"
+                type="number"
+                name="amount2"
+                id="amount2"
+                value={amount2}
+                onChange={(e) => {
+                  setAmount2(Number(e.target.value));
+                }}
+              />
+            </div>
+            <div className="flex justify-end mt-4">
+              <button className="bg-cyan-50 text-cyan-900 p-2 mt-2 rounded">
+                {isProcessing ? "Processing" : "Submit"}
+              </button>
+            </div>
+            <div className="flex flex-col justify-center gap-1 mt-2">
+              <label className="uppercase" htmlFor="amount2">
+                calculated:
+              </label>
+              <input
+                readOnly={true}
+                className="p-2 text-cyan-900"
+                type="number"
+                name="calculated"
+                id="calculated"
+                value={calculation}
+              />
+            </div>
+          </form>
+        )}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
