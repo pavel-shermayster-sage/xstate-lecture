@@ -1,4 +1,6 @@
+// @ts-nocheck
 import { assign, createMachine } from "xstate";
+import { toast } from "react-toastify";
 
 interface Context {
   amount1: number;
@@ -8,8 +10,8 @@ interface Context {
 
 type Event =
   | { type: "RESOLVE" }
-  | { type: "A1_UPDATE"; value: number }
-  | { type: "A2_UPDATE"; value: number }
+  | { type: "A1_UPDATE"; value: string }
+  | { type: "A2_UPDATE"; value: string }
   | { type: "PROCESS" };
 
 export const machine =
@@ -25,11 +27,10 @@ export const machine =
     context: {
       amount1: 0,
       amount2: 0,
-      calculated: 0, ///
+      calculated: 0,
     },
     states: {
       loading: {
-        // @ts-expect-error
         invoke: {
           id: "loadData",
           src: () => {
@@ -49,23 +50,22 @@ export const machine =
         },
       },
       ready: {
-        // @ts-expect-error
         on: {
           A1_UPDATE: {
             actions: assign((_, event) => ({
-              // @ts-expect-error
-              amount1: event.value,
+              amount1: Number(event.value),
             })),
           },
           A2_UPDATE: {
-            // @ts-expect-error
-            actions: assign((_, event) => event.value),
+            actions: assign((_, event) => Number(event.value)),
           },
           PROCESS: "processing",
         },
       },
       processing: {
-        // @ts-expect-error
+        entry: () => {
+          toast("Processing...", { autoClose: 2000 });
+        },
         invoke: {
           id: "process",
           src: (context) => {
