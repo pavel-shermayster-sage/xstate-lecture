@@ -37,7 +37,7 @@ export const machine =
             return new Promise((resolve) => {
               setTimeout(() => {
                 resolve({ amount1: 10, amount2: 20 });
-              }, 2000);
+              }, 10000);
             });
           },
           onDone: {
@@ -57,14 +57,16 @@ export const machine =
             })),
           },
           A2_UPDATE: {
-            actions: assign((_, event) => Number(event.value)),
+            actions: assign((_, event) => ({
+              amount2: Number(event.value),
+            })),
           },
           PROCESS: "processing",
         },
       },
       processing: {
         entry: () => {
-          toast("Processing...", { autoClose: 2000 });
+          toast("Processing...", { autoClose: 10000 });
         },
         invoke: {
           id: "process",
